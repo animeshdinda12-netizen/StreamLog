@@ -4,6 +4,7 @@ const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NA
 const API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents`;
 
 const postsContainer = document.getElementById('postsContainer');
+let lastPostCount = 0;
 
 async function loadPosts() {
   try {
@@ -26,9 +27,13 @@ async function loadPosts() {
       return;
     }
     
-    renderPosts(posts);
+    // Only update if new posts
+    if (posts.length !== lastPostCount) {
+      lastPostCount = posts.length;
+      renderPosts(posts);
+    }
   } catch (error) {
-    showError(error.message);
+    console.error(error);
   }
 }
 
@@ -41,8 +46,11 @@ function renderPosts(posts) {
       day: 'numeric',
     });
     
+    // Use post content as alt text, fallback to "Image"
+    const altText = post.content ? post.content.substring(0, 50).replace(/[^a-zA-Z0-9 ]/g, '') : 'Image';
+    
     const imageHtml = post.image 
-      ? `<img src="${BASE_URL}/${post.image}" alt="Post image" class="post-image" loading="lazy">` 
+      ? `<img src="${BASE_URL}/${post.image}" alt="${altText}" class="post-image" loading="lazy">` 
       : '';
     
     return `
@@ -82,4 +90,6 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// Auto-refresh every 10 seconds
 loadPosts();
+setInterval(loadPosts, 10000);
