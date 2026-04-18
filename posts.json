@@ -1,5 +1,11 @@
 [
   {
+    "id": "imgtest",
+    "content": "Test image post!",
+    "image": "images/test.png",
+    "timestamp": "2026-04-19T00:00:00Z"
+  },
+  {
     "id": "1776535688222",
     "content": "xcs",
     "image": "images/download-(1).jpg",
