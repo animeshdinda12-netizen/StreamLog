@@ -1,12 +1,13 @@
 const GITHUB_USERNAME = 'animeshdinda12-netizen';
 const REPO_NAME = 'StreamLog';
 const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/main`;
+const API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents`;
 
 const postsContainer = document.getElementById('postsContainer');
 
 async function loadPosts() {
   try {
-    const response = await fetch(`${BASE_URL}/posts.json`);
+    const response = await fetch(`${API_URL}/posts.json?t=${Date.now()}`);
     
     if (!response.ok) {
       if (response.status === 404) {
@@ -16,7 +17,9 @@ async function loadPosts() {
       throw new Error('Failed to load posts');
     }
     
-    const posts = await response.json();
+    const data = await response.json();
+    const content = atob(data.content);
+    const posts = JSON.parse(content);
     
     if (!posts || posts.length === 0) {
       showEmpty();
